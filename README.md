@@ -1,42 +1,64 @@
-<h1 align=center><strong>Forward Search Homework</strong></h1>
+<h1 align=center><strong>Forward Search Uni Assessment 🤓</strong></h1>
 
-In this exercise you will implement a Forward Search algorithm and compare it against model checking.
+# Hi, I'm Nicolas de Haan 👋
+This is a small project I built while exploring logic inference systems during my studies at CODE University in Berlin. The idea was to create a forward search engine — something that could take a bunch of logical rules and facts, and try to figure out new truths from them.
 
+I didn’t have much experience with this kind of reasoning at the start, so a lot of it was trial and error. I just wanted to see if I could make a program connect the dots on its own, kind of like how we do in our heads when something "clicks."
 
-# Credit:
-The implementation of propositional logic is to a large extent based on the content of the course CS50: Introduction to Computer Science (https://pll.harvard.edu/course/cs50-introduction-computer-science) 
+It’s far from perfect, but it works in most cases — and it gave me a better understanding of how reasoning engines tick. This project was also a nice way to apply what I’d learned from working with C and low-level logic into something a bit more abstract and algorithmic.
 
+## What is the Outcome ? 
 
-# Setup
-This project does not require additional dependencies beyond what's included in a standard Python installation.
+So, the way forward search works it goes like this: 
 
-# How to run?
-You start the program by starting main.py
-The script does not require additional arguments.
+- Some **known facts** (like "Socrates is a man")
+- Some **rules** (like "If someone is a man, then they are mortal")
 
-# Your Task
+Then:
 
-Your task is to implement the method *forward_search* in *solvers/forward_search.py*. This method should implement a forward search algorithm. It takes two arguments:
-- knowledge: the knowledge base. This is an And-connected formula that describes all you know to be true. 
-- query: the query you want to proof.
+- You keep inferring new stuff from what you already know.
+- You do this over and over until either:
+  1. You get the answer you were looking for
+  2. You can't learn anything new, and you're stuck
 
-The algorithm should return ...
-- True if the query can be proven from the knowledge
-- False if Not(query) can be provem fron the knowledge
-- None else.
+There’s no backtracking, no guessing — just going forward through what feels logically provable.
 
+## What the code actually does (line by line-ish)
 
-For this implementation, the following convenience methods have already been implemented:
-- check_proven checks whether the query is currently already proven in the current state of the knowledge base.
-- get_inferrable_knowledge takes the knowledge base and returns a list of all logical sentences that can be inferred. Inference is done by looking at all Implication and Biconditional statements within the knowledge base.
+### `check_proven(knowledge, query)`
 
-The script *main.py* compares your algoirthm against the model checker from the knights and knaves task (slightly adapted to fit the task specification here). It compares the result and the run time based on a number of different problems.
+This function checks if the query is already sitting in the knowledge base.  
+- If it finds it -> returns `True`  
+- If it finds the **negation** of it -> returns `False`  
+- If it finds nothing useful -> returns `None`  
 
-A few tips:
-- Test Problem 2 is more complex than the others. It's a good case study to get an impression of the time complexity of your algorithm compared to model checking. Your algorithm should be a lot faster than model checking on this test case. Do you understand why?
-- Your algorithm should have the same result as model checking in Test Problem 1 to 4.
-- Your algorithm will likely not be able to solve Test Problem 5 (meaning it will return None rather than the correct result). Can you find out why? 
+It’s the early-exit option for the loop, basically.
 
-# Relation to Assessments
+---
 
-Solving this task can be used as basis for showing specific knowledge in Reasoning for an assessment in module *SE_14 Artificial Intelligence Basics*.# AI_Foward_Search
+### `get_inferrable_knowledge(knowledge)`
+
+This is where the inference happens.  
+It loops over all the statements and tries to squeeze new facts out of implications or biconditionals:
+
+- If we have something like `A -> B`, and we know `A`, then we can now say `B` is true.
+- If we have a biconditional `A <-> B` and we know one side, we can infer the other.
+
+I didn’t build anything fancy like chaining chains or resolving contradictions — just basic one-step logical inference.
+
+---
+
+### `forward_search(knowledge, query)`
+
+This is the big one — it’s the loop that pulls everything together:
+
+1. Make a fresh copy of the knowledge base (to avoid mutating the original — I learned this the hard way)
+2. Dump all the facts into a set so we can track what we know.
+3. Check if the query is already proven (`check_proven`) — easy win if yes.
+4. Otherwise, ask: "Based on what I know, what else can I figure out?" (`get_inferrable_knowledge`)
+5. If we find anything new, we add it to our known facts and loop again.
+6. If we don’t, we give up.
+
+From my humble understanding it like you have a keychain and you try them all one by one until it works or you run out. 
+
+---
