@@ -30,7 +30,7 @@ symbol.py ...otherwise, the code will tell you nope.
 
 ## So, here's roughly how forward search works:
 
-So, it goes like this: 
+It goes like this: 
 
 - Some **known facts** (like "Socrates is a man")
 - Some **rules** (like "If someone is a man, then they are mortal")
