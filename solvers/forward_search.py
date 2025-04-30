@@ -67,29 +67,34 @@ def forward_search(knowledge, query):
         - None: if the query can't be proven or disproven
     """
 
-    # Best practice: copy the knowledge base so we don't accidentally modify an input parameter.
     knowledge_base = deepcopy(knowledge)
 
+     # Just grabbing all the known facts we start with.
     known_facts = set(knowledge_base.conjuncts)
 
     while True:
+        # Check if we already know the answer somehow
         result = check_proven(knowledge_base, query)
         if result is not None:
-            return result
+            return result  # If we do, great — we're done.
 
-        # Get all new inferences
+        # Try to see if we can figure out something new from what we know
         new_facts = get_inferrable_knowledge(knowledge_base)
 
-        # Filter out already known facts
+        # Make sure we're not repeating ourselves
         fresh_facts = [fact for fact in new_facts if fact not in known_facts]
 
         if not fresh_facts:
+            # Nothing new to learn, guess we can't prove it
             return None
 
-        # Add new facts to knowledge base
+        # Ok, learned something new — add it to what we know
         for fact in fresh_facts:
             known_facts.add(fact)
             knowledge_base.add(fact)
 
-
+# Forward search is fast and scales well for large deterministic knowledge bases.
+# It cannot handle uncertainty or disjunctions well.
+# Model checking is more exhaustive but slower.
+# Forward search and model checking agree on the truth of a query when it is deterministically provable, but model checking can prove queries forward search cannot.
     
