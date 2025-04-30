@@ -112,7 +112,7 @@ print(result)  # Should print: True
 
 ---
 
-# This is the core loop I wrote for the foward search algorithm 
+## This is the core loop I wrote for the foward search algorithm 
 
 ```
 def forward_search(knowledge, query):
@@ -142,7 +142,7 @@ def forward_search(knowledge, query):
             known_facts.add(fact)
             knowledge_base.add(fact)
 ```
-### understing of all this above: 
+### Understanding what this all means (ish): 
 
 * Forward search is fast and scales well for large deterministic knowledge bases.
 * It cannot handle uncertainty or disjunctions well.
