@@ -7,9 +7,30 @@ I didn’t have much experience with this kind of reasoning at the start, so a l
 
 It’s far from perfect, but it works in most cases — and it gave me a better understanding of how reasoning engines tick. This project was also a nice way to apply what I’d learned from working with C and low-level logic into something a bit more abstract and algorithmic.
 
-## What is the Outcome ? 
+## Setup 
 
-So, the way forward search works it goes like this: 
+Clone the repo:
+
+```bash
+git clone https://github.com/aimetamere/AI_Foward_Search.git
+cd AI_Foward_Search
+```
+
+Make sure you’re using Python 3.10+ and run it however you want. There's no fancy package manager needed.
+
+Also make sure your logic/ folder is set up properly — it should contain:
+
+implication.py
+
+biconditional.py
+
+negation.py
+
+symbol.py ...otherwise, the code will tell you nope.
+
+## So, here's roughly how forward search works:
+
+So, it goes like this: 
 
 - Some **known facts** (like "Socrates is a man")
 - Some **rules** (like "If someone is a man, then they are mortal")
@@ -62,3 +83,33 @@ This is the big one — it’s the loop that pulls everything together:
 From my humble understanding it like you have a keychain and you try them all one by one until it works or you run out. 
 
 ---
+
+## Example Usage
+
+```python
+from logic.symbol import Symbol
+from logic.and_formula import And
+from logic.implication import Implication
+from forward_search import forward_search
+
+A = Symbol("A")
+B = Symbol("B")
+
+knowledge = And(Implication(A, B), A)
+query = B
+
+result = forward_search(knowledge, query)
+print(result)  # Should print: True
+```
+
+---
+
+## Credits
+
+Built as part of my coursework at CODE University of Applied Sciences, Berlin.
+
+---
+
+## License 
+
+📄 Licensed under the MIT License — © 2025 Nicolas de Haan.
