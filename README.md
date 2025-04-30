@@ -7,6 +7,14 @@ I didn’t have much experience with this kind of reasoning at the start, so a l
 
 It’s far from perfect, but it works in most cases — and it gave me a better understanding of how reasoning engines tick. This project was also a nice way to apply what I’d learned from working with C and low-level logic into something a bit more abstract and algorithmic.
 
+## What I actually worked on 
+
+Most of the codebase (like the logic classes and utility functions) was provided as part of the course materials.
+
+My work started at line 70 of the forward_search.py file, where I implemented the actual forward search algorithm — basically the logic that keeps checking what’s known, infers new things, and decides whether the query can be proven.
+
+I also wrote the README (this one!) to break down what’s happening and show my understanding of the process, even if it can still be a bit abstract. 
+
 ## Setup 
 
 Clone the repo:
@@ -101,6 +109,45 @@ query = B
 result = forward_search(knowledge, query)
 print(result)  # Should print: True
 ```
+
+---
+
+# This is the core loop I wrote for the foward search algorithm 
+
+```
+def forward_search(knowledge, query):
+    knowledge_base = deepcopy(knowledge)
+
+    # Just grabbing all the known facts we start with.
+    known_facts = set(knowledge_base.conjuncts)
+
+    while True:
+        # Check if we already know the answer somehow
+        result = check_proven(knowledge_base, query)
+        if result is not None:
+            return result  # If we do, great — we're done.
+
+        # Try to see if we can figure out something new from what we know
+        new_facts = get_inferrable_knowledge(knowledge_base)
+
+        # Make sure we're not repeating ourselves
+        fresh_facts = [fact for fact in new_facts if fact not in known_facts]
+
+        if not fresh_facts:
+            # Nothing new to learn, guess we can't prove it
+            return None
+
+        # Ok, learned something new — add it to what we know
+        for fact in fresh_facts:
+            known_facts.add(fact)
+            knowledge_base.add(fact)
+```
+### understing of all this above: 
+
+* Forward search is fast and scales well for large deterministic knowledge bases.
+* It cannot handle uncertainty or disjunctions well.
+* Model checking is more exhaustive but slower.
+* Forward search and model checking agree on the truth of a query when it is deterministically  provable, but model checking can prove queries forward search cannot.   
 
 ---
 
